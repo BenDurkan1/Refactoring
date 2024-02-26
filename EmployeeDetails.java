@@ -175,29 +175,42 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 	    return menuBar;
 	}
 	// initialize search panel
-	private JPanel searchPanel() {
-		JPanel searchPanel = new JPanel(new MigLayout());
+	private JPanel createSearchPanel() {
+	    JPanel searchPanel = new JPanel(new MigLayout());
 
-		searchPanel.setBorder(BorderFactory.createTitledBorder("Search"));
-		searchPanel.add(new JLabel("Search by ID:"), "growx, pushx");
-		searchPanel.add(searchByIdField = new JTextField(20), "width 200:200:200, growx, pushx");
-		searchByIdField.addActionListener(this);
-		searchByIdField.setDocument(new JTextFieldLimit(20));
-		searchPanel.add(searchId = new JButton("Go"),
-				"width 35:35:35, height 20:20:20, growx, pushx, wrap");
-		searchId.addActionListener(this);
-		searchId.setToolTipText("Search Employee By ID");
+	    searchPanel.setBorder(BorderFactory.createTitledBorder("Search"));
 
-		searchPanel.add(new JLabel("Search by Surname:"), "growx, pushx");
-		searchPanel.add(searchBySurnameField = new JTextField(20), "width 200:200:200, growx, pushx");
-		searchBySurnameField.addActionListener(this);
-		searchBySurnameField.setDocument(new JTextFieldLimit(20));
-		searchPanel.add(
-				searchSurname = new JButton("Go"),"width 35:35:35, height 20:20:20, growx, pushx, wrap");
-		searchSurname.addActionListener(this);
-		searchSurname.setToolTipText("Search Employee By Surname");
+	    // Search by ID components
+	    JLabel searchByIdLabel = new JLabel("Search by ID:");
+	    searchPanel.add(searchByIdLabel, "growx, pushx");
 
-		return searchPanel;
+	    searchByIdField = new JTextField(20);
+	    searchByIdField.addActionListener(this);
+	    searchByIdField.setDocument(new JTextFieldLimit(20));
+	    searchPanel.add(searchByIdField, "width 200:200:200, growx, pushx");
+
+	    searchId = new JButton("Go");
+	    searchId.addActionListener(this);
+	    searchId.setToolTipText("Search Employee By ID");
+	    searchPanel.add(searchId, "width 35:35:35, height 20:20:20, growx, pushx, wrap");
+
+	    // Search by Surname components
+	    JLabel searchBySurnameLabel = new JLabel("Search by Surname:");
+	    searchPanel.add(searchBySurnameLabel, "growx, pushx");
+
+	    searchBySurnameField = new JTextField(20);
+	    searchBySurnameField.addActionListener(this);
+	    searchBySurnameField.setDocument(new JTextFieldLimit(20));
+	    searchPanel.add(searchBySurnameField, "width 200:200:200, growx, pushx");
+
+	    searchSurname = new JButton("Go");
+	    searchSurname.addActionListener(this);
+	    searchSurname.setToolTipText("Search Employee By Surname");
+	    searchPanel.add(searchSurname, "width 35:35:35, height 20:20:20, growx, pushx, wrap");
+
+	    return searchPanel;
+	
+
 	}// end searchPanel
 
 	// initialize navigation panel
@@ -1088,7 +1101,7 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 
 		setJMenuBar(createMenuBar()); // Add menu bar to frame using the refactored method
 		// add search panel to frame
-		dialog.add(searchPanel(), "width 400:400:400, growx, pushx");
+		dialog.add(createSearchPanel(), "width 400:400:400, growx, pushx");
 		// add navigation panel to frame
 		dialog.add(navigPanel(), "width 150:150:150, wrap");
 		// add button panel to frame
