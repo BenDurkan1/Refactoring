@@ -5,3 +5,10 @@
 -> Simplified the validateInput() method to check input validity in a more concise way.
 -> Extracted methods like resetTextFieldBackgrounds() and saveRecord() to improve readability and maintainability.
  -> Updated action listeners to use ActionEvent.getSource() for clarity.
+
+2nd Change on employeeDetails
+Jmenu
+> Improved readability and organization of the menu creation code.
+> 	Added comments to describe the purpose of each menu and menu item.
+> 	Used consistent naming conventions for variables and methods.
+>	Ensured all menu items are properly initialized and linked to the action listeners
