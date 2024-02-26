@@ -12,3 +12,4 @@ Jmenu
 > 	Added comments to describe the purpose of each menu and menu item.
 > 	Used consistent naming conventions for variables and methods.
 >	Ensured all menu items are properly initialized and linked to the action listeners
+
