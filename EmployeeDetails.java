@@ -336,6 +336,7 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		return empDetails;
 	}// end detailsPanel
 
+
 	// display current Employee details
 	public void displayRecords(Employee thisEmployee) {
 		int countGender = 0;
@@ -398,6 +399,7 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		if (isSomeoneToDisplay())
 			new SearchBySurnameDialog(EmployeeDetails.this);
 	}// end displaySearchBySurnameDialog
+	
 
 	// find byte start in file for first active record
 	private void firstRecord() {
@@ -475,89 +477,73 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		} // end if
 	}// end lastRecord
 
-	// search Employee by ID
-	public void searchEmployeeById() {
-		boolean found = false;
+	// Inside EmployeeDetails class
+	public void searchEmployeeById(int idToSearch) {
+	    boolean found = false;
+	    try {
+	        if (isSomeoneToDisplay()) {
+	            firstRecord();
+	            int firstId = currentEmployee.getEmployeeId();
+	            if (Integer.parseInt(searchByIdField.getText().trim()) == idToSearch) {
+	                found = true;
+	                displayRecords(currentEmployee);
+	            } else {
+	                nextRecord();
+	                while (firstId != currentEmployee.getEmployeeId()) {
+	                    if (Integer.parseInt(searchByIdField.getText().trim()) == currentEmployee.getEmployeeId()) {
+	                        found = true;
+	                        displayRecords(currentEmployee);
+	                        break;
+	                    } else
+	                        nextRecord();
+	                }
+	            }
+	            if (!found)
+	                JOptionPane.showMessageDialog(null, "Employee not found!");
+	        }
+	    } catch (NumberFormatException e) {
+	        searchByIdField.setBackground(new Color(255, 150, 150));
+	        JOptionPane.showMessageDialog(null, "Wrong ID format!");
+	    }
+	    searchByIdField.setBackground(Color.WHITE);
+	    searchByIdField.setText("");
+	}
 
-		try {// try to read correct correct from input
-				// if any active Employee record search for ID else do nothing
-			if (isSomeoneToDisplay()) {
-				firstRecord();// look for first record
-				int firstId = currentEmployee.getEmployeeId();
-				// if ID to search is already displayed do nothing else loop
-				// through records
-				if (searchByIdField.getText().trim().equals(idField.getText().trim()))
-					found = true;
-				else if (searchByIdField.getText().trim().equals(Integer.toString(currentEmployee.getEmployeeId()))) {
-					found = true;
-					displayRecords(currentEmployee);
-				} // end else if
-				else {
-					nextRecord();// look for next record
-					// loop until Employee found or until all Employees have
-					// been checked
-					while (firstId != currentEmployee.getEmployeeId()) {
-						// if found break from loop and display Employee details
-						// else look for next record
-						if (Integer.parseInt(searchByIdField.getText().trim()) == currentEmployee.getEmployeeId()) {
-							found = true;
-							displayRecords(currentEmployee);
-							break;
-						} else
-							nextRecord();// look for next record
-					} // end while
-				} // end else
-					// if Employee not found display message
-				if (!found)
-					JOptionPane.showMessageDialog(null, "Employee not found!");
-			} // end if
-		} // end try
-		catch (NumberFormatException e) {
-			searchByIdField.setBackground(new Color(255, 150, 150));
-			JOptionPane.showMessageDialog(null, "Wrong ID format!");
-		} // end catch
-		searchByIdField.setBackground(Color.WHITE);
-		searchByIdField.setText("");
-	}// end searchEmployeeByID
-
-	// search Employee by surname
-	public void searchEmployeeBySurname() {
-		boolean found = false;
-		// if any active Employee record search for ID else do nothing
-		if (isSomeoneToDisplay()) {
-			firstRecord();// look for first record
-			String firstSurname = currentEmployee.getSurname().trim();
-			// if ID to search is already displayed do nothing else loop through
-			// records
-			if (searchBySurnameField.getText().trim().equalsIgnoreCase(surnameField.getText().trim()))
-				found = true;
-			else if (searchBySurnameField.getText().trim().equalsIgnoreCase(currentEmployee.getSurname().trim())) {
-				found = true;
-				displayRecords(currentEmployee);
-			} // end else if
-			else {
-				nextRecord();// look for next record
-				// loop until Employee found or until all Employees have been
-				// checked
-				while (!firstSurname.trim().equalsIgnoreCase(currentEmployee.getSurname().trim())) {
-					// if found break from loop and display Employee details
-					// else look for next record
-					if (searchBySurnameField.getText().trim().equalsIgnoreCase(currentEmployee.getSurname().trim())) {
-						found = true;
-						displayRecords(currentEmployee);
-						break;
-					} // end if
-					else
-						nextRecord();// look for next record
-				} // end while
-			} // end else
-				// if Employee not found display message
-			if (!found)
-				JOptionPane.showMessageDialog(null, "Employee not found!");
-		} // end if
-		searchBySurnameField.setText("");
+	// Modify the method signature to accept a String parameter for the surname
+	public void searchEmployeeBySurname(String surnameToSearch) {
+	    boolean found = false;
+	    // if any active Employee record search for ID else do nothing
+	    if (isSomeoneToDisplay()) {
+	        firstRecord();// look for first record
+	        String firstSurname = currentEmployee.getSurname().trim();
+	        // if ID to search is already displayed do nothing else loop through records
+	        if (surnameToSearch.equalsIgnoreCase(surnameField.getText().trim()))
+	            found = true;
+	        else if (surnameToSearch.equalsIgnoreCase(currentEmployee.getSurname().trim())) {
+	            found = true;
+	            displayRecords(currentEmployee);
+	        } // end else if
+	        else {
+	            nextRecord();// look for next record
+	            // loop until Employee found or until all Employees have been checked
+	            while (!firstSurname.equalsIgnoreCase(currentEmployee.getSurname().trim())) {
+	                // if found break from loop and display Employee details
+	                // else look for next record
+	                if (surnameToSearch.equalsIgnoreCase(currentEmployee.getSurname().trim())) {
+	                    found = true;
+	                    displayRecords(currentEmployee);
+	                    break;
+	                } // end if
+	                else
+	                    nextRecord();// look for next record
+	            } // end while
+	        } // end else
+	        // if Employee not found display message
+	        if (!found)
+	            JOptionPane.showMessageDialog(null, "Employee not found!");
+	    } // end if
+	    searchBySurnameField.setText("");
 	}// end searchEmployeeBySurname
-
 	// get next free ID from Employees in the file
 	public int getNextFreeId() {
 		int nextFreeId = 0;
@@ -1022,76 +1008,80 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		application.createFile(file.getName());
 	}// end createRandomFile
 
-	// action listener for buttons, text field and menu items
 	public void actionPerformed(ActionEvent e) {
-
-		if (e.getSource() == closeApp) {
-			if (checkInput() && !checkForChanges())
-				exitApp();
-		} else if (e.getSource() == open) {
-			if (checkInput() && !checkForChanges())
-				openFile();
-		} else if (e.getSource() == save) {
-			if (checkInput() && !checkForChanges())
-				saveFile();
-			change = false;
-		} else if (e.getSource() == saveAs) {
-			if (checkInput() && !checkForChanges())
-				saveFileAs();
-			change = false;
-		} else if (e.getSource() == searchById) {
-			if (checkInput() && !checkForChanges())
-				displaySearchByIdDialog();
-		} else if (e.getSource() == searchBySurname) {
-			if (checkInput() && !checkForChanges())
-				displaySearchBySurnameDialog();
-		} else if (e.getSource() == searchId || e.getSource() == searchByIdField)
-			searchEmployeeById();
-		else if (e.getSource() == searchSurname || e.getSource() == searchBySurnameField)
-			searchEmployeeBySurname();
-		else if (e.getSource() == saveChange) {
-			if (checkInput() && !checkForChanges())
-				;
-		} else if (e.getSource() == cancelChange)
-			cancelChange();
-		else if (e.getSource() == firstItem || e.getSource() == first) {
-			if (checkInput() && !checkForChanges()) {
-				firstRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == prevItem || e.getSource() == previous) {
-			if (checkInput() && !checkForChanges()) {
-				previousRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == nextItem || e.getSource() == next) {
-			if (checkInput() && !checkForChanges()) {
-				nextRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == lastItem || e.getSource() == last) {
-			if (checkInput() && !checkForChanges()) {
-				lastRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == listAll || e.getSource() == displayAll) {
-			if (checkInput() && !checkForChanges())
-				if (isSomeoneToDisplay())
-					displayEmployeeSummaryDialog();
-		} else if (e.getSource() == create || e.getSource() == add) {
-			if (checkInput() && !checkForChanges())
-				new AddRecordDialog(EmployeeDetails.this);
-		} else if (e.getSource() == modify || e.getSource() == edit) {
-			if (checkInput() && !checkForChanges())
-				editDetails();
-		} else if (e.getSource() == delete || e.getSource() == deleteButton) {
-			if (checkInput() && !checkForChanges())
-				deleteRecord();
-		} else if (e.getSource() == searchBySurname) {
-			if (checkInput() && !checkForChanges())
-				new SearchBySurnameDialog(EmployeeDetails.this);
-		}
-	}// end actionPerformed
+	    if (e.getSource() == closeApp) {
+	        if (checkInput() && !checkForChanges())
+	            exitApp();
+	    } else if (e.getSource() == open) {
+	        if (checkInput() && !checkForChanges())
+	            openFile();
+	    } else if (e.getSource() == save) {
+	        if (checkInput() && !checkForChanges())
+	            saveFile();
+	        change = false;
+	    } else if (e.getSource() == saveAs) {
+	        if (checkInput() && !checkForChanges())
+	            saveFileAs();
+	        change = false;
+	    } else if (e.getSource() == searchById) {
+	        if (checkInput() && !checkForChanges())
+	            displaySearchByIdDialog();
+	    } else if (e.getSource() == searchBySurname) {
+	        if (checkInput() && !checkForChanges())
+	            displaySearchBySurnameDialog();
+	    } else if (e.getSource() == searchId || e.getSource() == searchByIdField) {
+	        try {
+	            int idToSearch = Integer.parseInt(searchByIdField.getText());
+	            searchEmployeeById(idToSearch); // Call the modified method with the entered ID
+	        } catch (NumberFormatException num) {
+	            searchByIdField.setBackground(new Color(255, 150, 150));
+	            JOptionPane.showMessageDialog(null, "Wrong ID format!");
+	        }
+	    } else if (e.getSource() == searchSurname || e.getSource() == searchBySurnameField) {
+	        searchEmployeeBySurname(searchBySurnameField.getText()); // Pass the surname to search
+	    } else if (e.getSource() == saveChange) {
+	        if (checkInput() && !checkForChanges())
+	            ;
+	    } else if (e.getSource() == cancelChange)
+	        cancelChange();
+	    else if (e.getSource() == firstItem || e.getSource() == first) {
+	        if (checkInput() && !checkForChanges()) {
+	            firstRecord();
+	            displayRecords(currentEmployee);
+	        }
+	    } else if (e.getSource() == prevItem || e.getSource() == previous) {
+	        if (checkInput() && !checkForChanges()) {
+	            previousRecord();
+	            displayRecords(currentEmployee);
+	        }
+	    } else if (e.getSource() == nextItem || e.getSource() == next) {
+	        if (checkInput() && !checkForChanges()) {
+	            nextRecord();
+	            displayRecords(currentEmployee);
+	        }
+	    } else if (e.getSource() == lastItem || e.getSource() == last) {
+	        if (checkInput() && !checkForChanges()) {
+	            lastRecord();
+	            displayRecords(currentEmployee);
+	        }
+	    } else if (e.getSource() == listAll || e.getSource() == displayAll) {
+	        if (checkInput() && !checkForChanges())
+	            if (isSomeoneToDisplay())
+	                displayEmployeeSummaryDialog();
+	    } else if (e.getSource() == create || e.getSource() == add) {
+	        if (checkInput() && !checkForChanges())
+	            new AddRecordDialog(EmployeeDetails.this);
+	    } else if (e.getSource() == modify || e.getSource() == edit) {
+	        if (checkInput() && !checkForChanges())
+	            editDetails();
+	    } else if (e.getSource() == delete || e.getSource() == deleteButton) {
+	        if (checkInput() && !checkForChanges())
+	            deleteRecord();
+	    } else if (e.getSource() == searchBySurname) {
+	        if (checkInput() && !checkForChanges())
+	            new SearchBySurnameDialog(EmployeeDetails.this);
+	    }
+	}
 
 	// content pane for main dialog
 	private void createContentPane() {
