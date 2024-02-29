@@ -88,41 +88,37 @@ public class AddRecordDialog extends JDialog implements ActionListener {
         if (e.getSource() == saveButton) {
             if (validateInput()) {
                 saveRecord();
-                dispose();
-                parent.changesMade = true;
-            } else {
-                JOptionPane.showMessageDialog(null, "Wrong values or format! Please check!");
-                resetTextFieldBackgrounds();
             }
         } else if (e.getSource() == cancelButton) {
             dispose();
+            parent.setEnabled(true);
         }
     }
- // Refactored method to validate user input
+ // This method checks for empty fields and correct salary format
     private boolean validateInput() {
         boolean valid = true;
-        JTextField[] fields = {ppsField, surnameField, firstNameField, salaryField};
-        // Simplified input validation logic
-        for (JTextField field : fields) {
-            if (field.getText().isEmpty()) {
-                field.setBackground(new Color(255, 150, 150));
-                valid = false;
-            }
+        // Check if the text fields are not empty
+        if (ppsField.getText().trim().isEmpty() || surnameField.getText().trim().isEmpty() ||
+            firstNameField.getText().trim().isEmpty() || salaryField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields must be filled", "Input Error", JOptionPane.ERROR_MESSAGE);
+            valid = false;
         }
 
+        // Check for valid salary
         try {
             double salary = Double.parseDouble(salaryField.getText());
             if (salary < 0) {
-                salaryField.setBackground(new Color(255, 150, 150));
+                JOptionPane.showMessageDialog(this, "Salary must be a positive number", "Input Error", JOptionPane.ERROR_MESSAGE);
                 valid = false;
             }
-        } catch (NumberFormatException ex) {
-            salaryField.setBackground(new Color(255, 150, 150));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid format for salary", "Input Error", JOptionPane.ERROR_MESSAGE);
             valid = false;
         }
 
         return valid;
     }
+
     // Refactored method to reset text field backgrounds
 
     private void resetTextFieldBackgrounds() {
@@ -132,15 +128,23 @@ public class AddRecordDialog extends JDialog implements ActionListener {
         }
     }
 
-    // Refactored method to save record
     private void saveRecord() {
+        if (!validateInput()) {
+            return; // Stop if validation fails
+        }
+
         boolean fullTime = fullTimeCombo.getSelectedIndex() == 1;
         Employee newEmployee = new Employee(parent.getNextFreeId(), ppsField.getText().toUpperCase(),
                 surnameField.getText().toUpperCase(), firstNameField.getText().toUpperCase(),
-                genderCombo.getSelectedItem().toString().charAt(0),
-                departmentCombo.getSelectedItem().toString(), Double.parseDouble(salaryField.getText()), fullTime);
-        parent.currentEmployee = newEmployee;
+                ((String) genderCombo.getSelectedItem()).charAt(0),
+                (String) departmentCombo.getSelectedItem(), Double.parseDouble(salaryField.getText()), fullTime);
+
+        // Assuming addRecord in EmployeeDetails is public and can be accessed like this
         parent.addRecord(newEmployee);
+        JOptionPane.showMessageDialog(this, "Record added successfully!", "Record Added", JOptionPane.INFORMATION_MESSAGE);
+        dispose(); // Close the dialog
+        parent.setEnabled(true);
         parent.displayRecords(newEmployee);
     }
+  
 }
